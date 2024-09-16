@@ -172,10 +172,14 @@
             <img src="hot.png" alt="Hotcakes Izquierda">
         </div>
         <div class="form-container">
-            <!-- Imagen dentro del formulario -->
-            <img src="cabeza.png" alt="Sabrositos Encabezado">
-            
-            <form action="https://danielnexus.app.n8n.cloud/webhook-test/5cdca90f-9118-4e89-a1a4-211040df5660" method="POST">
+    <!-- Imagen dentro del formulario -->
+    <img src="images/cabeza.png" alt="Sabrositos Encabezado">
+    
+    <!-- Nueva imagen debajo del encabezado -->
+    <img src="images/hot.png" alt="Mini Hotcake" class="small-image flipped">
+
+    <form action="https://danielnexus.app.n8n.cloud/webhook-test/5cdca90f-9118-4e89-a1a4-211040df5660" method="POST">
+        <!-- Resto del formulario -->
                 <!-- Información del cliente -->
                 <label for="nombre">Nombre Completo:</label>
                 <input type="text" id="nombre" name="nombre" required>
