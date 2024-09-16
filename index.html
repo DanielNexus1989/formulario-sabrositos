@@ -405,10 +405,7 @@
         const latitud = position.coords.latitude;
         const longitud = position.coords.longitude;
 
-        // URL para la solicitud a la API de Google Maps
-        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitud},${longitud}&key=AIzaSyA4xLpKlFg5PtpdM8feuk65iHsHFf4-FnI`;
-
-        // Hacer una solicitud a la API de Google Maps para obtener la dirección
+              // Hacer una solicitud a la API de Google Maps para obtener la dirección
         fetch(geocodeUrl)
             .then(response => response.json())
             .then(data => {
