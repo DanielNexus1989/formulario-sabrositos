@@ -109,8 +109,8 @@
             font-family: 'Arial', sans-serif;
         }
 
-        #direccion-entrega, #ubicacion-entrega {
-            margin-top: 15px;
+        .radio-group input[type="radio"] {
+            margin-right: 10px;
         }
 
         .eliminar-btn {
@@ -172,11 +172,14 @@
             <img src="hot.png" alt="Hotcakes Izquierda">
         </div>
         <div class="form-container">
-            <!-- Imagen dentro del formulario -->
-            <img src="cabeza.png" alt="Sabrositos Encabezado">
-            <img src="hot.png" alt="Mini Hotcake" class="small-image flipped">
+    <!-- Imagen dentro del formulario -->
+    <img src="cabeza.png" alt="Sabrositos Encabezado">
+    
+    <!-- Nueva imagen debajo del encabezado -->
+    <img src="hot.png" alt="Mini Hotcake" class="small-image flipped">
 
-            <form action="https://danielnexus.app.n8n.cloud/webhook-test/5cdca90f-9118-4e89-a1a4-211040df5660" method="POST">
+    <form action="https://danielnexus.app.n8n.cloud/webhook-test/5cdca90f-9118-4e89-a1a4-211040df5660" method="POST">
+        <!-- Resto del formulario -->
                 <!-- Información del cliente -->
                 <label for="nombre">Nombre Completo:</label>
                 <input type="text" id="nombre" name="nombre" required>
@@ -200,41 +203,6 @@
                     <option value="transferencia">Transferencia</option>
                 </select>
 
-                <!-- Opciones de entrega -->
-                <label for="tipo-entrega">Tipo de Entrega:</label>
-                <select id="tipo-entrega" name="tipo-entrega" required>
-                    <option value="" disabled selected>Seleccione una opción</option>
-                    <option value="domicilio">Entrega a domicilio</option>
-                    <option value="recoger">Recoger en tienda</option>
-                </select>
-
-                <!-- Campo de dirección (solo si seleccionan entrega a domicilio) -->
-                <div id="direccion-entrega" style="display: none;">
-                    <label for="direccion">Dirección de Entrega:</label>
-                    <input type="text" id="direccion" name="direccion" placeholder="Ingrese su dirección completa">
-                </div>
-
-                <!-- Ubicación para entrega -->
-                <div id="ubicacion-entrega" style="display: none;">
-                    <button type="button" onclick="obtenerUbicacion()">Enviar mi ubicación</button>
-                    <input type="text" id="ubicacion-direccion" name="ubicacion" placeholder="Dirección" readonly>
-                </div>
-
-                <!-- Aceptación del costo de entrega (solo si seleccionan entrega a domicilio) -->
-                <div id="costo-entrega" style="display: none;">
-                    <label>Aceptación del costo de entrega:</label>
-                    <div class="radio-group">
-                        <label>
-                            <input type="radio" name="entrega-costo" value="acepto" required>
-                            Acepto un cargo adicional de $25 para entregas fuera de la zona cercana (a más de 5 km).
-                        </label>
-                        <label>
-                            <input type="radio" name="entrega-costo" value="na" required>
-                            N/A (No aplicable)
-                        </label>
-                    </div>
-                </div>
-
                 <!-- Fecha y horario -->
                 <label for="fecha">Fecha de Entrega:</label>
                 <input type="date" id="fecha" name="fecha" required>
@@ -244,7 +212,19 @@
                     <option value="" disabled selected>Seleccione un horario</option>
                 </select>
 
-                <!-- Botón de envío del formulario -->
+                <!-- Aceptación del costo de entrega -->
+                <label>Aceptación del costo de entrega:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="entrega" value="acepto" required>
+                        Acepto el costo de entrega de $25 si la distancia es mayor a 10 minutos
+                    </label>
+                    <label>
+                        <input type="radio" name="entrega" value="na" required>
+                        N/A (No aplicable)
+                    </label>
+                </div>
+
                 <input type="submit" value="Realizar Pedido">
             </form>
         </div>
@@ -260,13 +240,13 @@
         const nuevoPedido = document.createElement('div');
         nuevoPedido.classList.add('pedido');
         nuevoPedido.setAttribute('id', 'pedido-' + contadorPedidos);
-        
+
         // Botón "Eliminar pedido" solo a partir del segundo pedido
         let eliminarBtnHTML = '';
         if (contadorPedidos > 0) {
             eliminarBtnHTML = `<button type="button" class="eliminar-btn" onclick="eliminarPedido('pedido-${contadorPedidos}')">Eliminar pedido</button>`;
         }
-    
+
         nuevoPedido.innerHTML = `
             ${eliminarBtnHTML}
             <label for="tipo-hotcakes-${contadorPedidos}">Tipo de Hot Cakes:</label>
@@ -275,28 +255,28 @@
                 <option value="tradicionales">Tradicionales</option>
                 <option value="rellenos-nutella">Rellenos de Nutella</option>
             </select>
-    
+
             <label for="cantidad-${contadorPedidos}">Cantidad:</label>
             <select class="cantidad" id="cantidad-${contadorPedidos}" name="cantidad[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
             </select>
-    
+
             <label for="coberturas-${contadorPedidos}">Coberturas:</label>
-            <select class="coberturas" id="coberturas-${contadorPedidos}" name="coberturas[]" required>
+                       <select class="coberturas" id="coberturas-${contadorPedidos}" name="coberturas[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
                 <option value="nutella">Nutella</option>
                 <option value="cajeta">Cajeta</option>
                 <option value="lechera">Lechera</option>
                 <option value="hersheys">Hershey’s</option>
             </select>
-    
+
             <label for="frutas-${contadorPedidos}">Frutas:</label>
             <select class="frutas" id="frutas-${contadorPedidos}" name="frutas[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
                 <option value="durazno">Durazno</option>
                 <option value="platano">Plátano</option>
             </select>
-    
+
             <label for="toppings-${contadorPedidos}">Toppings:</label>
             <select class="toppings" id="toppings-${contadorPedidos}" name="toppings[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
@@ -375,57 +355,6 @@
         actualizarHorario(fechaSeleccionada);
     });
 
-    document.getElementById('tipo-entrega').addEventListener('change', function() {
-        const tipoEntrega = this.value;
-        const costoEntregaDiv = document.getElementById('costo-entrega');
-        const direccionEntregaDiv = document.getElementById('direccion-entrega');
-        const ubicacionEntregaDiv = document.getElementById('ubicacion-entrega');
-
-        if (tipoEntrega === 'domicilio') {
-            costoEntregaDiv.style.display = 'block';
-            direccionEntregaDiv.style.display = 'block';
-            ubicacionEntregaDiv.style.display = 'block';
-        } else {
-            costoEntregaDiv.style.display = 'none';
-            direccionEntregaDiv.style.display = 'none';
-            ubicacionEntregaDiv.style.display = 'none';
-        }
-    });
-
-    function obtenerUbicacion() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(mostrarUbicacion, errorUbicacion);
-        } else {
-            alert("La geolocalización no es soportada por este navegador.");
-        }
-    }
-
-    // ======= Nuevo Código para Obtener la Dirección =======
-    function mostrarUbicacion(position) {
-        const latitud = position.coords.latitude;
-        const longitud = position.coords.longitude;
-
-              // Hacer una solicitud a la API de Google Maps para obtener la dirección
-        fetch(geocodeUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'OK') {
-                    const direccion = data.results[0].formatted_address;
-                    document.getElementById('ubicacion-direccion').value = direccion;
-                } else {
-                    alert('No se pudo obtener la dirección.');
-                }
-            })
-            .catch(error => {
-                console.error('Error al obtener la dirección:', error);
-                alert('Hubo un error al obtener la dirección.');
-            });
-    }
-
-    function errorUbicacion() {
-        alert("No se pudo obtener la ubicación.");
-    }
-
     window.onload = function() {
         agregarPedido();
 
@@ -437,4 +366,3 @@
 </script>
 </body>
 </html>
-
