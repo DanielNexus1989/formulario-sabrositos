@@ -42,11 +42,12 @@
         .form-container {
             flex: 2;
             min-width: 400px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 30px;
             border-radius: 15px;
             box-sizing: border-box;
             margin: 0 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .form-container img {
@@ -68,6 +69,13 @@
             color: #663300;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="tel"]:focus, input[type="email"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
+            border-color: #ff6600;
+            outline: none;
+            background-color: #fff0e6;
         }
 
         input[type="submit"], button {
@@ -95,6 +103,12 @@
             border-radius: 10px;
             background-color: #fffaf0;
             position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pedido:hover {
+            background-color: #fff0e6;
+            border-color: #ff6600;
         }
 
         .radio-group {
@@ -172,14 +186,12 @@
             <img src="hot.png" alt="Hotcakes Izquierda">
         </div>
         <div class="form-container">
-    <!-- Imagen dentro del formulario -->
-    <img src="cabeza.png" alt="Sabrositos Encabezado">
-    
-    <!-- Nueva imagen debajo del encabezado -->
-    <img src="hot.png" alt="Mini Hotcake" class="small-image flipped">
+            <!-- Imagen dentro del formulario -->
+            <img src="cabeza.png" alt="Sabrositos Encabezado">
+            <!-- Nueva imagen debajo del encabezado -->
+            <img src="hot.png" alt="Mini Hotcake" class="small-image flipped">
 
-    <form action="https://danielnexus.app.n8n.cloud/webhook-test/5cdca90f-9118-4e89-a1a4-211040df5660" method="POST">
-        <!-- Resto del formulario -->
+            <form action="https://danielnexus.app.n8n.cloud/webhook-test/5cdca90f-9118-4e89-a1a4-211040df5660" method="POST">
                 <!-- Información del cliente -->
                 <label for="nombre">Nombre Completo:</label>
                 <input type="text" id="nombre" name="nombre" required>
@@ -203,6 +215,35 @@
                     <option value="transferencia">Transferencia</option>
                 </select>
 
+                <!-- Opciones de entrega -->
+                <label for="tipo-entrega">Tipo de Entrega:</label>
+                <select id="tipo-entrega" name="tipo-entrega" required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="domicilio">Entrega a domicilio</option>
+                    <option value="recoger">Recoger en tienda</option>
+                </select>
+
+                <!-- Campo de dirección (solo si seleccionan entrega a domicilio) -->
+                <div id="direccion-entrega" style="display: none;">
+                    <label for="direccion">Dirección de Entrega:</label>
+                    <input type="text" id="direccion" name="direccion" placeholder="Ingrese su dirección completa">
+                </div>
+
+                <!-- Aceptación del costo de entrega (solo si seleccionan entrega a domicilio) -->
+                <div id="costo-entrega" style="display: none;">
+                    <label>Aceptación del costo de entrega:</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="entrega-costo" value="acepto" required>
+                            Acepto un cargo adicional de $25 para entregas fuera de la zona cercana (a más de 5 km).
+                        </label>
+                        <label>
+                            <input type="radio" name="entrega-costo" value="na" required>
+                            N/A
+                        </label>
+                    </div>
+                </div>
+
                 <!-- Fecha y horario -->
                 <label for="fecha">Fecha de Entrega:</label>
                 <input type="date" id="fecha" name="fecha" required>
@@ -212,19 +253,7 @@
                     <option value="" disabled selected>Seleccione un horario</option>
                 </select>
 
-                <!-- Aceptación del costo de entrega -->
-                <label>Aceptación del costo de entrega:</label>
-                <div class="radio-group">
-                    <label>
-                        <input type="radio" name="entrega" value="acepto" required>
-                        Acepto el costo de entrega de $25 si la distancia es mayor a 10 minutos
-                    </label>
-                    <label>
-                        <input type="radio" name="entrega" value="na" required>
-                        N/A (No aplicable)
-                    </label>
-                </div>
-
+                <!-- Botón de envío del formulario -->
                 <input type="submit" value="Realizar Pedido">
             </form>
         </div>
@@ -262,7 +291,7 @@
             </select>
 
             <label for="coberturas-${contadorPedidos}">Coberturas:</label>
-                       <select class="coberturas" id="coberturas-${contadorPedidos}" name="coberturas[]" required>
+            <select class="coberturas" id="coberturas-${contadorPedidos}" name="coberturas[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
                 <option value="nutella">Nutella</option>
                 <option value="cajeta">Cajeta</option>
@@ -353,6 +382,20 @@
 
         // Actualizar horarios según el día seleccionado
         actualizarHorario(fechaSeleccionada);
+    });
+
+    document.getElementById('tipo-entrega').addEventListener('change', function() {
+        const tipoEntrega = this.value;
+        const costoEntregaDiv = document.getElementById('costo-entrega');
+        const direccionEntregaDiv = document.getElementById('direccion-entrega');
+
+        if (tipoEntrega === 'domicilio') {
+            costoEntregaDiv.style.display = 'block';
+            direccionEntregaDiv.style.display = 'block';
+        } else {
+            costoEntregaDiv.style.display = 'none';
+            direccionEntregaDiv.style.display = 'none';
+        }
     });
 
     window.onload = function() {
