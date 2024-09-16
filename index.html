@@ -214,10 +214,10 @@
                     <input type="text" id="direccion" name="direccion" placeholder="Ingrese su dirección completa">
                 </div>
 
-                <!-- Botón para enviar ubicación (solo si seleccionan entrega a domicilio) -->
+                <!-- Ubicación para entrega -->
                 <div id="ubicacion-entrega" style="display: none;">
                     <button type="button" onclick="obtenerUbicacion()">Enviar mi ubicación</button>
-                    <input type="text" id="ubicacion-coordenadas" name="ubicacion" placeholder="Coordenadas" readonly>
+                    <input type="text" id="ubicacion-direccion" name="ubicacion" placeholder="Dirección" readonly>
                 </div>
 
                 <!-- Aceptación del costo de entrega (solo si seleccionan entrega a domicilio) -->
@@ -241,7 +241,7 @@
 
                 <label for="horario">Horario de Entrega:</label>
                 <select id="horario" name="horario" required>
-                                       <option value="" disabled selected>Seleccione un horario</option>
+                    <option value="" disabled selected>Seleccione un horario</option>
                 </select>
 
                 <!-- Botón de envío del formulario -->
@@ -260,13 +260,13 @@
         const nuevoPedido = document.createElement('div');
         nuevoPedido.classList.add('pedido');
         nuevoPedido.setAttribute('id', 'pedido-' + contadorPedidos);
-
+        
         // Botón "Eliminar pedido" solo a partir del segundo pedido
         let eliminarBtnHTML = '';
         if (contadorPedidos > 0) {
             eliminarBtnHTML = `<button type="button" class="eliminar-btn" onclick="eliminarPedido('pedido-${contadorPedidos}')">Eliminar pedido</button>`;
         }
-
+    
         nuevoPedido.innerHTML = `
             ${eliminarBtnHTML}
             <label for="tipo-hotcakes-${contadorPedidos}">Tipo de Hot Cakes:</label>
@@ -275,12 +275,12 @@
                 <option value="tradicionales">Tradicionales</option>
                 <option value="rellenos-nutella">Rellenos de Nutella</option>
             </select>
-
+    
             <label for="cantidad-${contadorPedidos}">Cantidad:</label>
             <select class="cantidad" id="cantidad-${contadorPedidos}" name="cantidad[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
             </select>
-
+    
             <label for="coberturas-${contadorPedidos}">Coberturas:</label>
             <select class="coberturas" id="coberturas-${contadorPedidos}" name="coberturas[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
@@ -289,14 +289,14 @@
                 <option value="lechera">Lechera</option>
                 <option value="hersheys">Hershey’s</option>
             </select>
-
+    
             <label for="frutas-${contadorPedidos}">Frutas:</label>
             <select class="frutas" id="frutas-${contadorPedidos}" name="frutas[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
                 <option value="durazno">Durazno</option>
                 <option value="platano">Plátano</option>
             </select>
-
+    
             <label for="toppings-${contadorPedidos}">Toppings:</label>
             <select class="toppings" id="toppings-${contadorPedidos}" name="toppings[]" required>
                 <option value="" disabled selected>Seleccione una opción</option>
@@ -400,10 +400,29 @@
         }
     }
 
+    // ======= Nuevo Código para Obtener la Dirección =======
     function mostrarUbicacion(position) {
         const latitud = position.coords.latitude;
         const longitud = position.coords.longitude;
-        document.getElementById('ubicacion-coordenadas').value = `Latitud: ${latitud}, Longitud: ${longitud}`;
+
+        // URL para la solicitud a la API de Google Maps
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitud},${longitud}&key=AIzaSyA4xLpKlFg5PtpdM8feuk65iHsHFf4-FnI`;
+
+        // Hacer una solicitud a la API de Google Maps para obtener la dirección
+        fetch(geocodeUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'OK') {
+                    const direccion = data.results[0].formatted_address;
+                    document.getElementById('ubicacion-direccion').value = direccion;
+                } else {
+                    alert('No se pudo obtener la dirección.');
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener la dirección:', error);
+                alert('Hubo un error al obtener la dirección.');
+            });
     }
 
     function errorUbicacion() {
@@ -421,3 +440,4 @@
 </script>
 </body>
 </html>
+
